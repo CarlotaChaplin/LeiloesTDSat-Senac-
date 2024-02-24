@@ -13,6 +13,8 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.util.List;
+import java.sql.SQLException;
 
 public class ProdutosDAO {
 
@@ -44,8 +46,41 @@ public class ProdutosDAO {
     }
 
     public ArrayList<ProdutosDTO> listarProdutos() {
+       
+         ArrayList<ProdutosDTO> lista = new ArrayList<ProdutosDTO>();
+         
+         try {
+            var conexao = new conectaDAO();
+            conn = conexao.connectDB();
+            
+            String sql = "SELECT * FROM produtos";
+            
+            PreparedStatement consulta = conn.prepareStatement(sql);
+            
+             ResultSet resposta = consulta.executeQuery();
+             
+             while (resposta.next()) {
+                ProdutosDTO p = new ProdutosDTO();
 
-        return listagem;
+                p.setId(resposta.getInt("id"));
+                p.setNome(resposta.getString("nome"));
+                p.setValor(resposta.getInt("valor"));
+                p.setStatus(resposta.getString("status"));
+                
+                lista.add(p);
+            }
+            
+            conexao.desconectar();
+            
+         }catch (SQLException e) {
+            System.out.println("Erro ao listar os regitros do banco de dados");
+             System.out.println(e);
+           
+        }
+         
+        
+        
+        return lista;
     }
 
 }
