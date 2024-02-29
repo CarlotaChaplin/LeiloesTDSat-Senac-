@@ -46,73 +46,95 @@ public class ProdutosDAO {
     }
 
     public ArrayList<ProdutosDTO> listarProdutos() {
-       
-         ArrayList<ProdutosDTO> lista = new ArrayList<ProdutosDTO>();
-         
-         try {
+
+        ArrayList<ProdutosDTO> lista = new ArrayList<ProdutosDTO>();
+
+        try {
             var conexao = new conectaDAO();
             conn = conexao.connectDB();
-            
+
             String sql = "SELECT * FROM produtos";
-            
+
             PreparedStatement consulta = conn.prepareStatement(sql);
-            
-             ResultSet resposta = consulta.executeQuery();
-             
-             while (resposta.next()) {
+
+            ResultSet resposta = consulta.executeQuery();
+
+            while (resposta.next()) {
                 ProdutosDTO p = new ProdutosDTO();
 
                 p.setId(resposta.getInt("id"));
                 p.setNome(resposta.getString("nome"));
                 p.setValor(resposta.getInt("valor"));
                 p.setStatus(resposta.getString("status"));
-                
+
                 lista.add(p);
             }
-            
+
             conexao.desconectar();
-            
-         }catch (SQLException e) {
+
+        } catch (SQLException e) {
             System.out.println("Erro ao listar os regitros do banco de dados");
-             System.out.println(e);
-           
+            System.out.println(e);
+
         }
-         
-        
-        
+
         return lista;
     }
-    
-    
-    public void venderProduto(int id){
-         
+
+    public void venderProduto(int id) {
+
         try {
             var conexao = new conectaDAO();
             conn = conexao.connectDB();
-            
-            
+
             String sql = "UPDATE produtos SET status = ? WHERE id=?;";
             PreparedStatement consulta = conn.prepareStatement(sql);
 
             consulta.setString(1, "Vendido");
-            consulta.setInt(2,id);
+            consulta.setInt(2, id);
 
-           
             consulta.execute();
 
-            
             conexao.desconectar();
-            
+
         } catch (SQLException e) {
             System.out.println("Erro ao tentar vender o produto selecionado");
-            
+
         }
     }
-    
-    
-    
-    public void listarProdutoVendido(){
-        
-    }
 
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+
+        ArrayList<ProdutosDTO> lista = new ArrayList<ProdutosDTO>();
+
+        try {
+            var conexao = new conectaDAO();
+            conn = conexao.connectDB();
+
+            String sql = "SELECT * FROM produtos WHERE status= 'Vendido';";
+
+            PreparedStatement consulta = conn.prepareStatement(sql);
+
+            ResultSet resposta = consulta.executeQuery();
+
+            while (resposta.next()) {
+                ProdutosDTO p = new ProdutosDTO();
+
+                p.setId(resposta.getInt("id"));
+                p.setNome(resposta.getString("nome"));
+                p.setValor(resposta.getInt("valor"));
+                p.setStatus(resposta.getString("status"));
+
+                lista.add(p);
+            }
+
+            conexao.desconectar();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar os regitros do banco de dados");
+            System.out.println(e);
+
+        }
+        return lista;
+    }
 }
